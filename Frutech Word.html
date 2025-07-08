@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🍎 Frutech Word</title>
+  <style>
+    :root {
+      --bg-light: #fdfdfd;
+      --bg-dark: #1a1a1a;
+      --text-light: #222;
+      --text-dark: #eee;
+      --accent: #ff6f61;
+      --border: #ffa502;
+      --toolbar-bg-light: #fff5ec;
+      --toolbar-bg-dark: #292929;
+      --radius: 12px;
+      --transition: 0.3s;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background var(--transition), color var(--transition);
+    }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    header {
+      background: linear-gradient(to right, var(--accent), #ffae00);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px;
+      background: var(--toolbar-bg-light);
+      border-bottom: 2px solid var(--border);
+      transition: background var(--transition);
+    }
+    body.dark .toolbar {
+      background: var(--toolbar-bg-dark);
+    }
+    .toolbar button,
+    .toolbar select,
+    .toolbar input[type="color"] {
+      padding: 8px 14px;
+      border: none;
+      border-radius: var(--radius);
+      background: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all var(--transition);
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    }
+    body.dark .toolbar button,
+    body.dark .toolbar select {
+      background: #333;
+      color: #eee;
+    }
+    .toolbar button:hover {
+      background: #ffd9b3;
+    }
+    body.dark .toolbar button:hover {
+      background: #444;
+    }
+    #editor {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      min-height: 70vh;
+      background: white;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      font-size: 17px;
+      line-height: 1.6;
+      transition: all var(--transition);
+      outline: none;
+    }
+    body.dark #editor {
+      background: #1f1f1f;
+      color: #eee;
+    }
+    .toggle-theme {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-size: 18px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+    footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: #888;
+    }
+    body.dark footer {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🍎 Frutech Word</header>
+  <button class="toggle-theme" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+
+  <div class="toolbar">
+    <button onclick="execCmd('bold')">🍇 Bold</button>
+    <button onclick="execCmd('italic')">🍓 Italic</button>
+    <button onclick="execCmd('underline')">🍒 Underline</button>
+
+    <select onchange="execCmd('formatBlock', this.value)">
+      <option value="">🍊 Heading</option>
+      <option value="h1">H1</option>
+      <option value="h2">H2</option>
+      <option value="h3">H3</option>
+      <option value="p">Paragraph</option>
+    </select>
+
+    <select onchange="changeFont(this.value)">
+      <option value="">🖋️ Font</option>
+      <option value="Arial">Arial</option>
+      <option value="Comic Sans MS">Comic Sans</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Monospace">Monospace</option>
+      <option value="Verdana">Verdana</option>
+    </select>
+
+    <input type="color" onchange="execCmd('foreColor', this.value)" title="Text Color">
+
+    <button onclick="execCmd('justifyLeft')">🍋 Left</button>
+    <button onclick="execCmd('justifyCenter')">🥝 Center</button>
+    <button onclick="execCmd('justifyRight')">🍍 Right</button>
+
+    <button onclick="copyContent()">📋 Copy</button>
+    <button onclick="clearContent()">🧼 Clear</button>
+    <button onclick="downloadTxt()">📄 Download (.txt)</button>
+  </div>
+
+  <div id="editor" contenteditable="true" spellcheck="true">
+    <p>🍏 Write your juicy ideas here!</p>
+  </div>
+
+  <footer>© 2025 Frutech Systems • 🍉Created by Cengiz Kara and Other Developers.</footer>
+
+  <script>
+  function execCmd(cmd, value = null) {
+    document.execCommand(cmd, false, value);
+  }
+
+  function changeFont(font) {
+    if (font) {
+      document.execCommand("fontName", false, font);
+    }
+  }
+
+  function copyContent() {
+    const range = document.createRange();
+    range.selectNode(document.getElementById("editor"));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    alert("📋 Content copied to clipboard!");
+  }
+
+  function clearContent() {
+    document.getElementById("editor").innerHTML = "<p></p>";
+  }
+
+  function downloadTxt() {
+    const text = document.getElementById("editor").innerText;
+    const blob = new Blob([text], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "frutech-word.txt";
+    link.click();
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    const btn = document.querySelector('.toggle-theme');
+    btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  }
+
+  
+  document.getElementById("editor").addEventListener("paste", function (e) {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    document.execCommand("insertText", false, text);
+  });
+</script>
+
